@@ -1,0 +1,64 @@
+$cart-view-popup-size: 200px;
+
+.cart-view {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+
+  z-index: 100;
+
+  width: 100%;
+  height: $cart-view-popup-size;
+
+  background: linear-gradient(
+    to bottom,
+    hsla(0, 0%, 100%, 0) 0%,
+    hsla(0, 0%, 100%, 0.012) 10.8%,
+    hsla(0, 0%, 100%, 0.046) 19.5%,
+    hsla(0, 0%, 100%, 0.099) 26.3%,
+    hsla(0, 0%, 100%, 0.168) 31.8%,
+    hsla(0, 0%, 100%, 0.248) 36.1%,
+    hsla(0, 0%, 100%, 0.338) 39.8%,
+    hsla(0, 0%, 100%, 0.433) 43.1%,
+    hsla(0, 0%, 100%, 0.53) 46.4%,
+    hsla(0, 0%, 100%, 0.626) 50.1%,
+    hsla(0, 0%, 100%, 0.719) 54.5%,
+    hsla(0, 0%, 100%, 0.803) 60%,
+    hsla(0, 0%, 100%, 0.877) 66.9%,
+    hsla(0, 0%, 100%, 0.936) 75.7%,
+    hsla(0, 0%, 100%, 0.979) 86.6%,
+    hsl(0, 0%, 100%) 100%
+  );
+  display: flex;
+
+  .info {
+    margin: auto;
+    margin-left: 5vw;
+  }
+
+  .done {
+    margin: auto;
+    margin-right: 5vw;
+  }
+
+  .info,
+  .done {
+    margin-top: 100px;
+  }
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transform: translateY($cart-view-popup-size);
+
+  transition: 0.23s all cubic-bezier(0.19, 1, 0.22, 1);
+
+  &[data-show='true'] {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+
+    transform: translateY(0);
+  }
+}

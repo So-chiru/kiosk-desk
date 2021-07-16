@@ -1,0 +1,26 @@
+$button-color: rgb(11, 99, 230);
+
+.button {
+  background: $button-color;
+  display: inline-block;
+  color: white;
+  border-radius: 16px;
+  padding: 12px 24px;
+  position: relative;
+  font-size: 18px;
+  letter-spacing: -1px;
+
+  cursor: pointer;
+  user-select: none;
+  transition: 0.23s background cubic-bezier(0.19, 1, 0.22, 1);
+
+  &:hover {
+    background: darken($button-color, 20);
+  }
+
+  &:active {
+    background: darken($button-color, 30);
+  }
+
+  text-align: center;
+}

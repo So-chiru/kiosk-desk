@@ -1,0 +1,22 @@
+.page-header {
+  display: flex;
+  height: 500px;
+  letter-spacing: -1px;
+
+  .contents {
+    margin: auto;
+    text-align: center;
+    top: 20vh;
+  }
+
+  .page-title {
+    font-weight: 500;
+    margin: auto;
+    font-size: 42px;
+  }
+
+  .page-help {
+    font-size: 26px;
+    color: rgb(70, 70, 70);
+  }
+}

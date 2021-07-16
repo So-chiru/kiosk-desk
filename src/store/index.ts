@@ -1,6 +1,9 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import sagaMiddleware, { rootSaga } from './sagas'
 
+import MainReducer from './main/reducer'
+import CartReducer from './cart/reducer'
+
 // 최상위 Reducer. 하위 Reducer들을 여기다 집어넣습니다.
 //
 // 1) 하위 Reducer들을 items 폴더에 Reducer이름을 포함한 새로운 폴더를 만들어
@@ -9,7 +12,8 @@ import sagaMiddleware, { rootSaga } from './sagas'
 // 2) 하위 Reducer들을 items 폴더에 Reducer 이름을 포함한 새로운 ts 파일을 만들어
 // 그 파일 안에서 action과 reducer 함수를 정의하는 방식으로 사용할 수 있습니다.
 const reducers = combineReducers({
-  // 예시) main: MainReducer,
+  main: MainReducer,
+  cart: CartReducer
 })
 
 // 하위 컴포넌트에서 최상위 Reducer에서 추론된 타입을 이용할 수 있도록 RootState type을 지정합니다.

@@ -1,0 +1,48 @@
+.logo-landmark {
+  position: relative;
+
+  display: flex;
+
+  &.big {
+    flex-direction: column;
+
+    .logo-image {
+      width: 200px;
+      height: 200px;
+
+      margin-bottom: 42px;
+    }
+
+    .logo-text {
+      font-size: 64px;
+      letter-spacing: -6px;
+    }
+  }
+
+  &.small {
+    flex-direction: row;
+
+    .logo-image {
+      width: 70px;
+      height: 70px;
+
+      margin-right: 26px;
+    }
+
+    .logo-text {
+      font-size: 24px;
+      letter-spacing: -2px;
+    }
+  }
+
+  .logo-image,
+  .logo-text {
+    margin: auto;
+  }
+
+  .logo-image {
+    position: relative;
+    border-radius: 50%;
+    background: #333;
+  }
+}

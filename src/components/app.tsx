@@ -1,15 +1,37 @@
-import CartView from './CartView'
-import Header from './Header'
-import StoreItemCollection from './StoreItemCollection'
+import { Route, Switch } from 'react-router-dom'
+
+import { TransitionGroup, CSSTransition } from 'react-transition-group'
+import MainPage from '@/pages/main'
+import MenuPage from '@/pages/menu'
 
 // 애플리케이션의 최상위 (따지면 아니지만) 가 될 컴포넌트입니다. 이 안에서 원하는 컴포넌트들을
 // 정의하여 사용하시면 됩니다.
 const App = () => {
   return (
     <>
-      <Header></Header>
-      <StoreItemCollection></StoreItemCollection>
-      <CartView></CartView>
+      <Route
+        render={({ location }) => {
+          return (
+            <TransitionGroup appear={true}>
+              <CSSTransition
+                key={location.key}
+                timeout={230}
+                classNames='kiosk-page'
+                unmountOnExit
+              >
+                <Switch location={location}>
+                  <Route path='/' exact>
+                    <MainPage></MainPage>
+                  </Route>
+                  <Route path='/menu' exact>
+                    <MenuPage></MenuPage>
+                  </Route>
+                </Switch>
+              </CSSTransition>
+            </TransitionGroup>
+          )
+        }}
+      ></Route>
     </>
   )
 }

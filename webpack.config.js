@@ -58,9 +58,9 @@ module.exports = (_, argv) => {
         template: './views/index.html',
         filename: 'index.html'
       }),
-      // new DefinePlugin({
-      //   'process.env.ENV_VALUE': JSON.stringify(process.env.ENV_VALUE)
-      // }),
+      new DefinePlugin({
+        'process.env.GRAPHQL_ENDPOINT': JSON.stringify(process.env.GRAPHQL_ENDPOINT)
+      }),
       // new CopyWebpackPlugin({
       //   patterns: [
       //     {

@@ -1,22 +1,18 @@
 .page-header {
-  display: flex;
-  height: 500px;
-  letter-spacing: -1px;
-
-  .contents {
-    margin: auto;
-    text-align: center;
-    top: 20vh;
-  }
-
-  .page-title {
-    font-weight: 500;
+  .title {
+    font-weight: bold;
     margin: auto;
     font-size: 42px;
+    letter-spacing: -4px;
+
+    margin-bottom: 12px;
   }
 
-  .page-help {
+  .description {
     font-size: 26px;
     color: rgb(70, 70, 70);
+    letter-spacing: -2px;
+
+    margin-top: 0px;
   }
 }

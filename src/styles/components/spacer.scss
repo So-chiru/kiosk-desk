@@ -1,0 +1,23 @@
+.kiosk-spacer {
+  &[data-flex='true'] {
+    display: flex;
+  }
+
+  &[data-template='main-contents'] {
+    height: 100vh;
+  }
+
+  &[data-template='header-logo'] {
+    display: flex;
+    height: 200px;
+
+    & > * {
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
+    .logo-landmark {
+      margin-right: 26px;
+    }
+  }
+}

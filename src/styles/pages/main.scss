@@ -1,0 +1,19 @@
+.page.main {
+  .page-contents {
+    margin: auto;
+  }
+
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .button {
+      width: 60%;
+      margin: auto;
+
+      font-size: 24px;
+      letter-spacing: -2px;
+    }
+  }
+}

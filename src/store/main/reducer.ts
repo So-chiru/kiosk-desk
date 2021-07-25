@@ -1,13 +1,16 @@
 import { MainAction } from './actions'
 
 const MainDefault = {
-  store: '테스트 가게'
+  storeName: '맛있는 치킨집 가로수길점',
+  menus: []
 }
 
 const MainReducer = (state = MainDefault, action: MainAction) => {
   switch (action.type) {
-    case '@kiosk/update':
-      return state
+    case '@kiosk/updateMenu':
+      return Object.assign({}, state, {
+        menus: action.data
+      })
     default:
       return state
   }

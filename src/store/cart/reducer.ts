@@ -36,10 +36,37 @@ const addItem = (state = CartDefault, action: CartAction): ICartDefault => {
   })
 }
 
+const updateItemCount = (
+  state = CartDefault,
+  action: CartAction
+): ICartDefault => {
+  const items = [...state.items]
+
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i]
+
+    if (item.item.id === action.item.id) {
+      item.amount = action.data as number
+
+      if (item.amount <= 0) {
+        items.splice(i, 1)
+      }
+
+      break
+    }
+  }
+
+  return Object.assign({}, state, {
+    items
+  })
+}
+
 const CartReducer = (state = CartDefault, action: CartAction) => {
   switch (action.type) {
     case '@kiosk/cart/addItem':
       return addItem(state, action)
+    case '@kiosk/cart/updateItemCount':
+      return updateItemCount(state, action)
     default:
       return state
   }

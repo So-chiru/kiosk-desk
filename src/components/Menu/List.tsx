@@ -5,8 +5,16 @@ interface MenuListProps {
 }
 
 import '@/styles/components/menu/list.scss'
+import { useDispatch } from 'react-redux'
+import { addItemToCart } from '@/store/cart/actions'
 
 export const MenuList = ({ items }: MenuListProps) => {
+  const dispatch = useDispatch()
+
+  const itemClick = (item: StoreItem) => {
+    dispatch(addItemToCart(item))
+  }
+
   return (
     <div className='menus'>
       {!items.length && (
@@ -15,7 +23,11 @@ export const MenuList = ({ items }: MenuListProps) => {
         </h1>
       )}
       {...items.map(item => (
-        <MenuItemsGroup key={item.id} item={item}></MenuItemsGroup>
+        <MenuItemsGroup
+          key={item.id}
+          item={item}
+          onClick={itemClick}
+        ></MenuItemsGroup>
       ))}
     </div>
   )

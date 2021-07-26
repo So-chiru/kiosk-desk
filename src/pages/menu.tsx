@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import '@/styles/pages/menu.scss'
+import PurchasePopup from '@/popup/purchase'
 
 const useMenuDataFetch = () => {
   const data = useSelector((state: RootState) => state.main.menus)
@@ -81,6 +82,7 @@ export const MenuPage = () => {
             description='다 고르신 후에는 화면 아래의 선택 완료 버튼을 눌러주세요.'
           ></Header>
           <MenuList items={menus}></MenuList>
+          <PurchasePopup></PurchasePopup>
         </div>
       </Spacer>
     </div>

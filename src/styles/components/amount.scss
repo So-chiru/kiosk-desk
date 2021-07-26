@@ -1,0 +1,51 @@
+.amount-selection {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+
+  .amount-number {
+    font-size: 48px;
+    font-weight: bold;
+    letter-spacing: -2px;
+    margin: auto;
+  }
+
+  .minus,
+  .plus {
+    position: relative;
+    border-radius: 50%;
+    border: 2px solid #000;
+    display: flex;
+    background: rgba(255, 255, 255, 1);
+    padding: 8px;
+
+    &[data-remove='true'] {
+      background: rgb(255, 207, 207);
+      border: 2px solid rgb(255, 185, 185);
+    }
+
+    width: 32px;
+    height: 32px;
+
+    & > svg {
+      margin: auto;
+      width: 26px;
+      height: 26px;
+    }
+
+    cursor: pointer;
+
+    &:hover {
+      background: rgb(231, 231, 231);
+    }
+
+    &:active {
+      background: rgb(218, 218, 218);
+    }
+  }
+
+  & > * {
+    margin: auto;
+  }
+}

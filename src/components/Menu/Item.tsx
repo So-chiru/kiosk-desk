@@ -1,13 +1,14 @@
 interface MenuItemProps {
   item: StoreItem
+  onClick?: (item: StoreItem) => void
 }
 
 import '@/styles/components/menu/item.scss'
 import { comma } from '@/utils/number'
 
-export const MenuItem = ({ item }: MenuItemProps) => {
+export const MenuItem = ({ item, onClick }: MenuItemProps) => {
   return (
-    <div className='menu-item'>
+    <div className='menu-item' onClick={() => onClick && onClick(item)}>
       <div className='menu-item-contents'>
         <img className='menu-item-image' src={item.image}></img>
         <div className='menu-item-metadata'>

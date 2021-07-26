@@ -59,8 +59,11 @@ module.exports = (_, argv) => {
         filename: 'index.html'
       }),
       new DefinePlugin({
-        'process.env.GRAPHQL_ENDPOINT': JSON.stringify(process.env.GRAPHQL_ENDPOINT)
-      }),
+        'process.env.GRAPHQL_ENDPOINT': JSON.stringify(
+          process.env.GRAPHQL_ENDPOINT
+        ),
+        'process.env.API_ENDPOINT': JSON.stringify(process.env.API_ENDPOINT)
+      })
       // new CopyWebpackPlugin({
       //   patterns: [
       //     {

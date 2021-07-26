@@ -1,0 +1,17 @@
+.cart-menus {
+  margin: 80px 0px;
+  margin-bottom: 256px;
+  display: grid;
+
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  width: 100%;
+
+  gap: 32px;
+
+  .no-menu {
+    font-size: 42px;
+    letter-spacing: -4px;
+    color: #808080;
+  }
+}

@@ -1,0 +1,38 @@
+.status-indicator {
+  position: relative;
+  width: 100%;
+  display: flex;
+
+  .contents {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .icon {
+    margin: auto;
+
+    svg {
+      width: 200px;
+      height: 200px;
+    }
+  }
+
+  .title,
+  .description {
+    letter-spacing: -4px;
+
+    margin: 0;
+  }
+
+  .title {
+    font-size: 48px;
+    margin-top: 32px;
+    margin-bottom: 16px;
+  }
+
+  .description {
+    font-size: 36px;
+    color: #787b81;
+  }
+}

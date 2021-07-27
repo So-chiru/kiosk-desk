@@ -26,6 +26,9 @@ const App = () => {
                   <Route path='/menu' exact>
                     <MenuPage></MenuPage>
                   </Route>
+                  <Route path='/menu/:orderState' exact>
+                    <MenuPage></MenuPage>
+                  </Route>
                 </Switch>
               </CSSTransition>
             </TransitionGroup>

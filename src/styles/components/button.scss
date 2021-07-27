@@ -35,5 +35,16 @@ $button-alt-color: rgb(90, 92, 95);
     }
   }
 
+  &[data-big='true'] {
+    font-size: 36px;
+    padding: 24px 128px;
+    letter-spacing: -4px;
+  }
+
+  &[data-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.2;
+  }
+
   text-align: center;
 }

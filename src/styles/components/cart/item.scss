@@ -8,18 +8,6 @@
 
   transition: 0.23s background cubic-bezier(0.19, 1, 0.22, 1);
 
-  &:hover {
-    .cart-item-image {
-      box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.16);
-    }
-  }
-
-  &:active {
-    .cart-item-image {
-      box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
-    }
-  }
-
   .cart-item-brief {
     display: flex;
     flex-direction: row;

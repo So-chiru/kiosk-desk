@@ -217,6 +217,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tosspayments/sdk-types@npm:^1.1.4":
+  version: 1.1.5
+  resolution: "@tosspayments/sdk-types@npm:1.1.5"
+  checksum: 0c93e6e7049e78abe7144fc0eb455f9ddc3ce906f5b610a9807f0c2fbfcba53d55e82ca244f50646ee23cf4a254f20b91a3f15364546f6ce2bdb38fd189ac108
+  languageName: node
+  linkType: hard
+
+"@tosspayments/sdk@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@tosspayments/sdk@npm:1.2.0"
+  dependencies:
+    "@tosspayments/sdk-types": ^1.1.4
+  checksum: 5e1986a97526d78e9b4f28e7c6a3811673b04bc923a378f11a61e4858a6566ca225db08c87cc8367dd109ac2f617c30458b4396e64d89e7a1ad82da31e36c299
+  languageName: node
+  linkType: hard
+
 "@types/cacheable-request@npm:^6.0.1":
   version: 6.0.2
   resolution: "@types/cacheable-request@npm:6.0.2"
@@ -6094,6 +6110,7 @@ fsevents@~2.3.2:
   version: 0.0.0-use.local
   resolution: "react-base-sochiru@workspace:."
   dependencies:
+    "@tosspayments/sdk": ^1.2.0
     "@types/node": ^16.4.2
     "@types/react": ^17.0.3
     "@types/react-dom": ^17.0.3

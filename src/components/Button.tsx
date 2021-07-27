@@ -4,6 +4,7 @@ import '@/styles/components/button.scss'
 
 interface ButtonComponentProps {
   children: ReactNode
+  big?: boolean
   theme?: string
   disabled?: boolean
   onClick?: () => void
@@ -11,6 +12,7 @@ interface ButtonComponentProps {
 
 export const ButtonComponent = ({
   children,
+  big,
   disabled,
   theme,
   onClick
@@ -18,6 +20,7 @@ export const ButtonComponent = ({
   return (
     <div
       className='button'
+      data-big={big}
       data-theme={theme}
       data-disabled={disabled}
       onClick={() => !disabled && onClick && onClick()}
@@ -29,14 +32,26 @@ export const ButtonComponent = ({
 
 interface ButtonProps {
   children: ReactNode
+  big?: boolean
   theme?: string
   disabled?: boolean
   onClick?: () => void
 }
 
-export const Button = ({ children, theme, onClick, disabled }: ButtonProps) => {
+export const Button = ({
+  children,
+  big,
+  theme,
+  onClick,
+  disabled
+}: ButtonProps) => {
   return (
-    <ButtonComponent onClick={onClick} {...disabled} theme={theme}>
+    <ButtonComponent
+      big={big}
+      onClick={onClick}
+      disabled={disabled}
+      theme={theme}
+    >
       {children}
     </ButtonComponent>
   )

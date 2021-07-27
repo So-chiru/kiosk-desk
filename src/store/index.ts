@@ -3,6 +3,7 @@ import sagaMiddleware, { rootSaga } from './sagas'
 
 import MainReducer from './main/reducer'
 import CartReducer from './cart/reducer'
+import PaymentsReducer from './payment/reducer'
 
 // 최상위 Reducer. 하위 Reducer들을 여기다 집어넣습니다.
 //
@@ -13,7 +14,8 @@ import CartReducer from './cart/reducer'
 // 그 파일 안에서 action과 reducer 함수를 정의하는 방식으로 사용할 수 있습니다.
 const reducers = combineReducers({
   main: MainReducer,
-  cart: CartReducer
+  cart: CartReducer,
+  payments: PaymentsReducer
 })
 
 // 하위 컴포넌트에서 최상위 Reducer에서 추론된 타입을 이용할 수 있도록 RootState type을 지정합니다.

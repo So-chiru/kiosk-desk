@@ -26,3 +26,7 @@ declare interface CartItem {
   item: StoreItem
   amount: number
 }
+
+declare interface StoreItemWithAmounts extends StoreItem {
+  amount: number
+}

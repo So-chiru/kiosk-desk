@@ -62,7 +62,10 @@ module.exports = (_, argv) => {
         'process.env.GRAPHQL_ENDPOINT': JSON.stringify(
           process.env.GRAPHQL_ENDPOINT
         ),
-        'process.env.API_ENDPOINT': JSON.stringify(process.env.API_ENDPOINT)
+        'process.env.API_ENDPOINT': JSON.stringify(process.env.API_ENDPOINT),
+        'process.env.TOSS_PAYMENTS_CLIENT_KEY': JSON.stringify(
+          process.env.TOSS_PAYMENTS_CLIENT_KEY
+        )
       })
       // new CopyWebpackPlugin({
       //   patterns: [

@@ -5,12 +5,19 @@ interface MenuItemProps {
 
 import '@/styles/components/menu/item.scss'
 import { comma } from '@/utils/number'
+import LazyImage from '../LazyImage'
 
 export const MenuItem = ({ item, onClick }: MenuItemProps) => {
   return (
     <div className='menu-item' onClick={() => onClick && onClick(item)}>
       <div className='menu-item-contents'>
-        <img className='menu-item-image' src={item.image}></img>
+        {item.image && (
+          <LazyImage
+            className='menu-item-image'
+            src={item.image}
+            height={271}
+          ></LazyImage>
+        )}
         <div className='menu-item-metadata'>
           <div className='shorten'>
             <h3 className='menu-name'>{item.name}</h3>

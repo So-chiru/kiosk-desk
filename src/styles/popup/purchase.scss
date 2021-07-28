@@ -164,6 +164,10 @@
 .result-view-contents {
   margin: auto;
   text-align: center;
+
+  .status-indicator {
+    margin: auto;
+  }
 }
 
 .purchase-popup-enter {
@@ -172,7 +176,7 @@
 }
 
 .purchase-popup-enter-active,
-.purchase-popup-exit {
+.purchase-popup-exit-active {
   opacity: 1;
   transform: translateY(0px);
 }

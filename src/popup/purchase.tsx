@@ -157,6 +157,30 @@ const SelectPayments = ({
 
   const [fetching, setFetching] = useState<boolean>(false)
 
+  const cancelPayment = async (orderId: string, cancelReason?: string) => {
+    setFetching(true)
+
+    fetch(process.env.API_ENDPOINT! + `/order/${orderId}/cancel`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify({
+        reason: cancelReason
+      })
+    })
+      .then(v => v.json())
+      .then(v => {
+        if (v.status === 'success') {
+          // success
+
+          prev()
+        }
+      })
+      .finally(() => setFetching(false))
+  }
+
   const goPayment = async (payWith: StorePaymentMethod) => {
     if (!toss) {
       // toss 서비스가 안되는 경우 에러 표시하기
@@ -182,6 +206,10 @@ const SelectPayments = ({
           return
         }
 
+        if (!v.data.order) {
+          return
+        }
+
         // TODO : error handling
 
         if (v.data && v.data.toss) {
@@ -195,17 +223,25 @@ const SelectPayments = ({
           }
 
           if (payWith === StorePaymentMethod.Toss) {
-            toss.requestPayment('카드', {
-              ...orderData,
-              flowMode: 'DIRECT',
-              easyPay: 'TOSSPAY'
-            })
+            toss
+              .requestPayment('카드', {
+                ...orderData,
+                flowMode: 'DIRECT',
+                easyPay: 'TOSSPAY'
+              })
+              .catch(e => cancelPayment(v.data.order.id, e.message))
           } else if (payWith === StorePaymentMethod.Card) {
-            toss.requestPayment('카드', orderData)
+            toss
+              .requestPayment('카드', orderData)
+              .catch(e => cancelPayment(v.data.order.id, e.message))
           } else if (payWith === StorePaymentMethod.VirtualAccount) {
-            toss.requestPayment('가상계좌', { ...orderData, validHours: 3 })
+            toss
+              .requestPayment('가상계좌', { ...orderData, validHours: 3 })
+              .catch(e => cancelPayment(v.data.order.id, e.message))
           } else if (payWith === StorePaymentMethod.Mobile) {
-            toss.requestPayment('휴대폰', orderData)
+            toss
+              .requestPayment('휴대폰', orderData)
+              .catch(e => cancelPayment(v.data.order.id, e.message))
           }
         }
 
@@ -325,6 +361,18 @@ const OrderDone = ({ state, error, waiting, leftTime }: OrderDoneProps) => {
     )
   }
 
+  if (state === StorePaymentRequestState.Error) {
+    return (
+      <div className='result-view-contents'>
+        <StatusIndicator
+          icon='error'
+          title={'결제하는 중에 오류가 발생하였습니다.'}
+          description={'잠시 기다려주세요.'}
+        ></StatusIndicator>
+      </div>
+    )
+  }
+
   return (
     <div className='result-view-contents'>
       <StatusIndicator
@@ -388,7 +436,7 @@ const useOrderPlace = (): [
 
       setWaiting(undefined)
 
-      fetch(process.env.API_ENDPOINT! + '/order/payment', {
+      fetch(process.env.API_ENDPOINT! + `/order/${orderId}/payment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -409,11 +457,7 @@ const useOrderPlace = (): [
             return
           }
 
-          if (
-            res.data.state === StoreOrderState.WaitingPayment ||
-            res.data.state === StoreOrderState.Ready ||
-            res.data.state === StoreOrderState.InProgress
-          ) {
+          if (res.data.state === StoreOrderState.WaitingPayment) {
             setState(StorePaymentRequestState.Waiting)
 
             if (res.data.virtualAccount) {
@@ -430,6 +474,17 @@ const useOrderPlace = (): [
                 }' 이름으로 보내주세요.`
               })
             }
+
+            return
+          } else if (res.data.state === StoreOrderState.WaitingAccept) {
+            setState(StorePaymentRequestState.Waiting)
+
+            setWaiting({
+              icon: 'loading',
+              title: '주문 확인을 기다리고 있습니다...',
+              left: 1800000,
+              description: '가게에서 확인할 때까지 잠시 기다려주세요.'
+            })
 
             return
           }
@@ -452,8 +507,19 @@ const useOrderPlace = (): [
     }
 
     if (orderState === 'order_failed') {
+      const url = new URL(location.href)
+
+      const orderId = url.searchParams.get('orderId')
+      const code = url.searchParams.get('code')
+      const message = url.searchParams.get('message')
+
       setState(StorePaymentRequestState.Error)
-      // setError()
+
+      if (code && message) {
+        setError(new Error(`${code}: ${message}`))
+      }
+
+      console.log(orderId)
     }
   }, [orderState])
 

@@ -3,7 +3,7 @@ import SmallLogo from '@/components/Logo/Small'
 import MenuList from '@/components/Menu/List'
 import Spacer from '@/components/Spacer'
 import { RootState } from '@/store'
-import { updateMenuData } from '@/store/main/actions'
+import { updateMenuData, updateSocket } from '@/store/main/actions'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -67,8 +67,26 @@ const useMenuDataFetch = () => {
   return data
 }
 
+const useDataSocket = () => {
+  const socket = useSelector((state: RootState) => state.main.socket)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (!socket || socket.readyState === socket.CLOSED) {
+      const localSocket = new WebSocket(
+        process.env.API_ENDPOINT!.replace('http', 'ws') + '/socket'
+      )
+
+      dispatch(updateSocket(localSocket))
+    }
+  }, [socket])
+
+  return socket
+}
+
 export const MenuPage = () => {
   const menus = useMenuDataFetch()
+  useDataSocket()
 
   return (
     <div className='page menu'>

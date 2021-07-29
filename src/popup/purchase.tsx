@@ -9,7 +9,7 @@ import React, { ReactNode, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { cartTotal, comma } from '@/utils/number'
 
-import { loadTossPayments, TossPaymentsInstance } from '@tosspayments/sdk'
+import { loadTossPayments } from '@tosspayments/sdk'
 import { initializeTossPayments } from '@/store/payment/actions'
 import { useHistory, useParams } from 'react-router-dom'
 import StatusIndicator from '@/components/StatusIndicator'
@@ -18,11 +18,7 @@ import {
   StorePaymentMethod,
   StorePaymentRequestState
 } from '@/@types/order'
-import {
-  CSSTransition,
-  Transition,
-  TransitionGroup
-} from 'react-transition-group'
+import { CSSTransition } from 'react-transition-group'
 
 const READY_TIME = 15000
 interface ViewCartsProps {
@@ -246,7 +242,9 @@ const SelectPayments = ({
         }
 
         if (payWith === StorePaymentMethod.Direct) {
-          history.replace('/menu/order_success/?orderId=' + v.data.order.id)
+          history.replace(
+            `/menu/order_success/?orderId=${v.data.order.id}&amount=${v.data.order.price}`
+          )
         }
       })
       .finally(() => {
@@ -390,6 +388,47 @@ const OrderDone = ({ state, error, waiting, leftTime }: OrderDoneProps) => {
   )
 }
 
+const useDataSocket = (
+  stateUpdate: (data: any) => void
+): [React.Dispatch<React.SetStateAction<string | undefined>>, WebSocket?] => {
+  const socket = useSelector((state: RootState) => state.main.socket)
+  const [orderId, setOrderId] = useState<string>()
+
+  useEffect(() => {
+    if (!socket) {
+      return
+    }
+
+    let IdSet = false
+    if (orderId && socket.readyState === socket.OPEN) {
+      socket.send(JSON.stringify({ setOrderId: orderId }))
+      IdSet = true
+    }
+
+    socket.onopen = ev => {
+      if (orderId && !IdSet) {
+        socket.send(JSON.stringify({ setOrderId: orderId }))
+      }
+    }
+
+    socket.onmessage = ev => {
+      console.log(ev.data)
+
+      if (typeof ev.data === 'string' && ev.data.indexOf('{') === 0) {
+        const message = JSON.parse(ev.data)
+
+        // TODO : 다른 명령어 처리 함수를 만들어서 해당 함수에서 명령 수행
+
+        if (message.code === 'STATE_UPDATE') {
+          stateUpdate(message.data)
+        }
+      }
+    }
+  }, [socket, orderId])
+
+  return [setOrderId, socket]
+}
+
 export enum PurchaseStep {
   Selecting,
   Verify,
@@ -422,6 +461,58 @@ const useOrderPlace = (): [
 
   const [error, setError] = useState<Error>()
 
+  const stateUpdate = (data: any) => {
+    console.log(data.state)
+
+    if (data.state === StoreOrderState.WaitingPayment) {
+      setState(StorePaymentRequestState.Waiting)
+
+      if (data.virtualAccount) {
+        setWaiting({
+          icon: 'bank',
+          title: '입금을 기다리는 중입니다.',
+          left:
+            new Date(data.virtualAccount.dueDate).getTime() -
+            new Date().getTime(),
+          description: `${data.virtualAccount.bank} ${
+            data.virtualAccount.accountNumber
+          } 계좌로 ${comma(data.price)}원을 '${
+            data.virtualAccount.customerName
+          }' 이름으로 보내주세요.`
+        })
+      }
+
+      return
+    } else if (data.state === StoreOrderState.WaitingAccept) {
+      setState(StorePaymentRequestState.Waiting)
+
+      setWaiting({
+        icon: 'loading',
+        title: '주문 확인을 기다리고 있습니다...',
+        left: 1800000,
+        description: '가게에서 확인할 때까지 잠시 기다려주세요.'
+      })
+
+      return
+    }
+
+    if (
+      data.state === StoreOrderState.Aborted ||
+      data.state === StoreOrderState.Expired ||
+      data.state === StoreOrderState.Failed ||
+      data.state === StoreOrderState.Canceled
+    ) {
+      setState(StorePaymentRequestState.Error)
+      setError(new Error(data.error))
+
+      return
+    }
+
+    setState(StorePaymentRequestState.Success)
+  }
+
+  const [setOrderId, _socket] = useDataSocket(stateUpdate)
+
   useEffect(() => {
     if (!orderState) {
       return
@@ -435,6 +526,10 @@ const useOrderPlace = (): [
       const amount = url.searchParams.get('amount')
 
       setWaiting(undefined)
+
+      if (orderId) {
+        setOrderId(orderId)
+      }
 
       fetch(process.env.API_ENDPOINT! + `/order/${orderId}/payment`, {
         method: 'POST',
@@ -457,53 +552,8 @@ const useOrderPlace = (): [
             return
           }
 
-          if (res.data.state === StoreOrderState.WaitingPayment) {
-            setState(StorePaymentRequestState.Waiting)
-
-            if (res.data.virtualAccount) {
-              setWaiting({
-                icon: 'bank',
-                title: '입금을 기다리는 중입니다.',
-                left:
-                  new Date(res.data.virtualAccount.dueDate).getTime() -
-                  new Date().getTime(),
-                description: `${res.data.virtualAccount.bank} ${
-                  res.data.virtualAccount.accountNumber
-                } 계좌로 ${comma(res.data.price)}원을 '${
-                  res.data.virtualAccount.customerName
-                }' 이름으로 보내주세요.`
-              })
-            }
-
-            return
-          } else if (res.data.state === StoreOrderState.WaitingAccept) {
-            setState(StorePaymentRequestState.Waiting)
-
-            setWaiting({
-              icon: 'loading',
-              title: '주문 확인을 기다리고 있습니다...',
-              left: 1800000,
-              description: '가게에서 확인할 때까지 잠시 기다려주세요.'
-            })
-
-            return
-          }
-
-          if (
-            res.data.state === StoreOrderState.Aborted ||
-            res.data.state === StoreOrderState.Expired ||
-            res.data.state === StoreOrderState.Failed ||
-            res.data.state === StoreOrderState.Canceled
-          ) {
-            setState(StorePaymentRequestState.Error)
-            setError(new Error(res.data.error))
-
-            return
-          }
-
-          setState(StorePaymentRequestState.Success)
+          stateUpdate(res.data)
         })
-        .catch(e => {})
     }
 
     if (orderState === 'order_failed') {

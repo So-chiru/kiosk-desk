@@ -6,6 +6,13 @@ export interface MainAction {
 export const updateMenuData = (data: unknown) => {
   return {
     type: '@kiosk/updateMenu',
-    data: data
+    data
+  }
+}
+
+export const updateSocket = (data: WebSocket) => {
+  return {
+    type: '@kiosk/updateSocket',
+    data
   }
 }

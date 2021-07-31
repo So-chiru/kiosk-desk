@@ -3,12 +3,14 @@ import { Route, Switch } from 'react-router-dom'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import MainPage from '@/pages/main'
 import MenuPage from '@/pages/menu'
+import DataSocket from './Data/socket'
 
 // 애플리케이션의 최상위 (따지면 아니지만) 가 될 컴포넌트입니다. 이 안에서 원하는 컴포넌트들을
 // 정의하여 사용하시면 됩니다.
 const App = () => {
   return (
     <>
+      <DataSocket></DataSocket>
       <Route
         render={({ location }) => {
           return (

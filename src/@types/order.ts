@@ -24,7 +24,7 @@ export enum StorePaymentMethod {
 
 export interface StoreOrder extends VerifiedStoreOrderRequest {
   id: string
-  date: number
+  date: string
   payWith: StorePaymentMethod
   state: StoreOrderState
 }

@@ -19,11 +19,25 @@ import {
   StorePaymentRequestState
 } from '@/@types/order'
 import { CSSTransition } from 'react-transition-group'
+import { BankIcon, CardIcon, DirectIcon, TossIcon } from '@/components/Icons'
 
 const READY_TIME = 30000
 interface ViewCartsProps {
   items: CartItem[]
   onClick: () => void
+}
+
+interface StateUpdateData {
+  state: StoreOrderState
+  price?: number
+  virtualAccount?: {
+    accountNumber: string
+    bank: string
+    customerName: string
+    dueDate: string
+    refundStatus: 'NONE' | 'FAILED' | 'PENDING' | 'PARTIAL_FAILED' | 'COMPLETED'
+  }
+  error?: string
 }
 
 const ViewCarts = ({ items, onClick }: ViewCartsProps) => {
@@ -92,55 +106,32 @@ const useInitToss = () => {
   return toss
 }
 
-const PurchaseIcons = {
-  toss: (
-    <svg
-      width='69'
-      height='61'
-      viewBox='0 0 69 61'
-      fill='none'
-      xmlns='http://www.w3.org/2000/svg'
-    >
-      <path
-        d='M68.6431 26.6965C66.8705 11.4225 54.0461 0.143529 39.1397 0H38.8066C37.6526 0 36.4986 0.0717642 35.3328 0.203333C31.0976 0.693725 27.1836 2.05725 23.7217 4.07863C23.6504 4.12647 23.5671 4.17431 23.4957 4.2102C23.4243 4.24608 23.3648 4.29392 23.2935 4.3298C6.12673 14.6161 0 38.3582 0 52.8188L13.8357 44.7931C18.7133 54.1345 28.064 60.2823 38.4854 60.4019H38.8185C39.9724 60.4019 41.1264 60.3302 42.2923 60.1986C58.769 58.261 70.5704 43.2621 68.6431 26.6965Z'
-        fill='white'
-      />
-    </svg>
-  ),
-  card: (
-    <svg
-      xmlns='http://www.w3.org/2000/svg'
-      viewBox='0 0 24 24'
-      width='64'
-      height='64'
-    >
-      <path fill='none' d='M0 0h24v24H0z' />
-      <path d='M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm17 8H4v8h16v-8zm0-2V5H4v4h16zm-6 6h4v2h-4v-2z' />
-    </svg>
-  ),
-  bank: (
-    <svg
-      xmlns='http://www.w3.org/2000/svg'
-      viewBox='0 0 24 24'
-      width='64'
-      height='64'
-    >
-      <path fill='none' d='M0 0h24v24H0z' />
-      <path d='M2 20h20v2H2v-2zm2-8h2v7H4v-7zm5 0h2v7H9v-7zm4 0h2v7h-2v-7zm5 0h2v7h-2v-7zM2 7l10-5 10 5v4H2V7zm2 1.236V9h16v-.764l-8-4-8 4zM12 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2z' />
-    </svg>
-  ),
-  direct: (
-    <svg
-      xmlns='http://www.w3.org/2000/svg'
-      viewBox='0 0 24 24'
-      width='64'
-      height='64'
-    >
-      <path fill='none' d='M0 0h24v24H0z' />
-      <path d='M7.39 16.539a8 8 0 1 1 9.221 0l2.083 4.76a.5.5 0 0 1-.459.701H5.765a.5.5 0 0 1-.459-.7l2.083-4.761zm6.735-.693l1.332-.941a6 6 0 1 0-6.913 0l1.331.941L8.058 20h7.884l-1.817-4.154zM8.119 10.97l1.94-.485a2 2 0 0 0 3.882 0l1.94.485a4.002 4.002 0 0 1-7.762 0z' />
-    </svg>
-  )
-}
+const PaymentMethods = [
+  {
+    theme: '',
+    icon: TossIcon,
+    text: '토스로 결제하기',
+    method: StorePaymentMethod.Toss
+  },
+  {
+    theme: 'alt',
+    icon: CardIcon,
+    text: '카드로 결제하기',
+    method: StorePaymentMethod.Card
+  },
+  {
+    theme: 'alt',
+    icon: BankIcon,
+    text: '계좌 이체로 결제하기',
+    method: StorePaymentMethod.VirtualAccount
+  },
+  {
+    theme: 'alt',
+    icon: DirectIcon,
+    text: '직접 결제하기 (현금)',
+    method: StorePaymentMethod.Direct
+  }
+]
 
 const SelectPayments = ({
   prev,
@@ -169,10 +160,10 @@ const SelectPayments = ({
       .then(v => v.json())
       .then(v => {
         if (v.status === 'success') {
-          // success
-
           prev()
         }
+
+        // TODO : 적절한 에러 핸들링
       })
       .finally(() => setFetching(false))
   }
@@ -206,7 +197,7 @@ const SelectPayments = ({
           return
         }
 
-        // TODO : error handling
+        // TODO : 적절한 에러 핸들링
 
         if (v.data && v.data.toss) {
           const orderData = {
@@ -214,7 +205,7 @@ const SelectPayments = ({
             orderId: v.data.toss.orderId,
             orderName: v.data.toss.orderName,
             customerName: v.data.toss.customerName,
-            successUrl: window.location.origin + '/menu/order_success',
+            successUrl: window.location.origin + '/menu/order_processing',
             failUrl: window.location.origin + '/menu/order_failed'
           }
 
@@ -243,7 +234,7 @@ const SelectPayments = ({
 
         if (payWith === StorePaymentMethod.Direct) {
           history.replace(
-            `/menu/order_success/?orderId=${v.data.order.id}&amount=${v.data.order.price}`
+            `/menu/order_processing/?orderId=${v.data.order.id}&amount=${v.data.order.price}`
           )
         }
       })
@@ -268,41 +259,18 @@ const SelectPayments = ({
             총 {comma(cartTotal(items))}원을 결제합니다.
           </h1>
           <div className='purchase-buttons'>
-            <Button
-              big
-              disabled={fetching}
-              onClick={() => goPayment(StorePaymentMethod.Toss)}
-            >
-              {PurchaseIcons['toss']}
-              <span>토스로 결제하기</span>
-            </Button>
-            <Button
-              big
-              theme='alt'
-              disabled={fetching}
-              onClick={() => goPayment(StorePaymentMethod.Card)}
-            >
-              {PurchaseIcons['card']}
-              <span>카드로 결제하기</span>
-            </Button>
-            <Button
-              big
-              theme='alt'
-              disabled={fetching}
-              onClick={() => goPayment(StorePaymentMethod.VirtualAccount)}
-            >
-              {PurchaseIcons['bank']}
-              <span>계좌 이체로 결제하기</span>
-            </Button>
-            <Button
-              big
-              theme='alt'
-              disabled={fetching}
-              onClick={() => goPayment(StorePaymentMethod.Direct)}
-            >
-              {PurchaseIcons['card']}
-              <span>직접 결제하기</span>
-            </Button>
+            {PaymentMethods.map(v => (
+              <Button
+                key={'purchase-button-method-' + v.method}
+                big
+                theme={v.theme}
+                disabled={fetching}
+                onClick={() => goPayment(v.method)}
+              >
+                {v.icon}
+                <span>{v.text}</span>
+              </Button>
+            ))}
           </div>
         </div>
       </div>
@@ -389,7 +357,7 @@ const OrderDone = ({ state, error, waiting, leftTime }: OrderDoneProps) => {
 }
 
 const useDataSocket = (
-  stateUpdate: (data: any) => void
+  stateUpdate: (data: StateUpdateData) => void
 ): [React.Dispatch<React.SetStateAction<string | undefined>>, WebSocket?] => {
   const socket = useSelector((state: RootState) => state.main.socket)
   const [orderId, setOrderId] = useState<string>()
@@ -429,7 +397,7 @@ const useDataSocket = (
   return [setOrderId, socket]
 }
 
-export enum PurchaseStep {
+export enum PurchasePopupStep {
   Selecting,
   Verify,
   Purchase,
@@ -461,9 +429,7 @@ const useOrderPlace = (): [
 
   const [error, setError] = useState<Error>()
 
-  const stateUpdate = (data: any) => {
-    console.log(data.state)
-
+  const stateUpdate = (data: StateUpdateData) => {
     if (data.state === StoreOrderState.WaitingPayment) {
       setState(StorePaymentRequestState.Waiting)
 
@@ -476,7 +442,7 @@ const useOrderPlace = (): [
             new Date().getTime(),
           description: `${data.virtualAccount.bank} ${
             data.virtualAccount.accountNumber
-          } 계좌로 ${comma(data.price)}원을 '${
+          } 계좌로 ${comma(data.price!)}원을 '${
             data.virtualAccount.customerName
           }' 이름으로 보내주세요.`
         })
@@ -518,7 +484,7 @@ const useOrderPlace = (): [
       return
     }
 
-    if (orderState === 'order_success') {
+    if (orderState === 'order_processing') {
       const url = new URL(location.href)
 
       const orderId = url.searchParams.get('orderId')
@@ -577,26 +543,26 @@ const useOrderPlace = (): [
 }
 
 const useStep = (): [
-  PurchaseStep,
-  React.Dispatch<React.SetStateAction<PurchaseStep>>,
+  PurchasePopupStep,
+  React.Dispatch<React.SetStateAction<PurchasePopupStep>>,
   () => void,
   () => void
 ] => {
-  const [step, setStep] = useState<PurchaseStep>(PurchaseStep.Selecting)
+  const [step, setStep] = useState<PurchasePopupStep>(PurchasePopupStep.Selecting)
 
   const next = () => {
-    if (step === PurchaseStep.Verify) {
-      setStep(PurchaseStep.Purchase)
+    if (step === PurchasePopupStep.Verify) {
+      setStep(PurchasePopupStep.Purchase)
     }
   }
 
   const previous = () => {
-    if (step === PurchaseStep.Verify) {
-      setStep(PurchaseStep.Selecting)
+    if (step === PurchasePopupStep.Verify) {
+      setStep(PurchasePopupStep.Selecting)
     }
 
-    if (step === PurchaseStep.Purchase) {
-      setStep(PurchaseStep.Verify)
+    if (step === PurchasePopupStep.Purchase) {
+      setStep(PurchasePopupStep.Verify)
     }
   }
 
@@ -604,7 +570,7 @@ const useStep = (): [
 }
 
 const useAutoClose = (
-  step: PurchaseStep,
+  step: PurchasePopupStep,
   setStep: ReturnType<typeof useStep>[1],
   orderState: StorePaymentRequestState,
   backToMain: () => void
@@ -614,7 +580,7 @@ const useAutoClose = (
 
   useEffect(() => {
     if (
-      step !== PurchaseStep.Done ||
+      step !== PurchasePopupStep.Done ||
       orderState === StorePaymentRequestState.Waiting
     ) {
       return
@@ -630,7 +596,7 @@ const useAutoClose = (
 
     if (leftTime < 0) {
       backToMain()
-      setStep(PurchaseStep.Selecting)
+      setStep(PurchasePopupStep.Selecting)
     }
 
     return () => {
@@ -650,8 +616,8 @@ export const PurchasePopup = () => {
   }
 
   const minimize = () => {
-    if (step !== PurchaseStep.Done) {
-      setStep(PurchaseStep.Selecting)
+    if (step !== PurchasePopupStep.Done) {
+      setStep(PurchasePopupStep.Selecting)
       return
     }
 
@@ -667,11 +633,11 @@ export const PurchasePopup = () => {
   ] = useOrderPlace()
   const leftTime = useAutoClose(step, setStep, orderState, backToMain)
 
-  const [lastStep, setLastStep] = useState<PurchaseStep>(step)
+  const [lastStep, setLastStep] = useState<PurchasePopupStep>(step)
 
   useEffect(() => {
-    if (!carts.length && step === PurchaseStep.Verify) {
-      setStep(PurchaseStep.Selecting)
+    if (!carts.length && step === PurchasePopupStep.Verify) {
+      setStep(PurchasePopupStep.Selecting)
     }
   }, [carts, step])
 
@@ -682,19 +648,19 @@ export const PurchasePopup = () => {
       return
     }
 
-    if (step !== PurchaseStep.Done) {
-      setStep(PurchaseStep.Done)
+    if (step !== PurchasePopupStep.Done) {
+      setStep(PurchasePopupStep.Done)
     }
   }, [orderResponseDefined])
 
   let InnerContents: ReactNode = (
     <ViewCarts
       items={carts}
-      onClick={() => setStep(PurchaseStep.Verify)}
+      onClick={() => setStep(PurchasePopupStep.Verify)}
     ></ViewCarts>
   )
 
-  if (step === PurchaseStep.Verify) {
+  if (step === PurchasePopupStep.Verify) {
     InnerContents = (
       <VerifyCarts
         orderState={orderState}
@@ -703,7 +669,7 @@ export const PurchasePopup = () => {
         next={next}
       ></VerifyCarts>
     )
-  } else if (step === PurchaseStep.Purchase) {
+  } else if (step === PurchasePopupStep.Purchase) {
     InnerContents = (
       <SelectPayments
         items={carts}
@@ -712,7 +678,7 @@ export const PurchasePopup = () => {
         next={() => {}}
       ></SelectPayments>
     )
-  } else if (step === PurchaseStep.Done) {
+  } else if (step === PurchasePopupStep.Done) {
     InnerContents = (
       <OrderDone
         leftTime={leftTime}
@@ -725,7 +691,7 @@ export const PurchasePopup = () => {
 
   let popupState = PopupState.Hidden
 
-  if (step > PurchaseStep.Selecting || orderResponseDefined) {
+  if (step > PurchasePopupStep.Selecting || orderResponseDefined) {
     popupState = PopupState.Full
   } else if (carts.length) {
     popupState = PopupState.Minimize

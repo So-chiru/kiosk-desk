@@ -20,7 +20,7 @@ import {
 } from '@/@types/order'
 import { CSSTransition } from 'react-transition-group'
 
-const READY_TIME = 15000
+const READY_TIME = 30000
 interface ViewCartsProps {
   items: CartItem[]
   onClick: () => void
@@ -375,7 +375,7 @@ const OrderDone = ({ state, error, waiting, leftTime }: OrderDoneProps) => {
     <div className='result-view-contents'>
       <StatusIndicator
         icon='check'
-        title={'결제가 완료되었습니다!'}
+        title={'주문이 완료되었습니다!'}
         description={'음식이 완성되면 주문 번호를 챙겨 카운터로 와주세요.'}
       ></StatusIndicator>
       <h3 className='auto-close-text'>

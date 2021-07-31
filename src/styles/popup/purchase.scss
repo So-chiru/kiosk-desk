@@ -177,7 +177,8 @@
 }
 
 .purchase-popup-enter-active,
-.purchase-popup-exit-active {
+.purchase-popup-exit-active,
+.purchase-popup-enter-done {
   opacity: 1;
   transform: translateY(0px);
 }
@@ -189,9 +190,9 @@
 
 .purchase-popup-enter-active,
 .purchase-popup-exit-active {
-  transition: opacity 550ms, transform 580ms cubic-bezier(0.19, 1, 0.22, 1);
+  transition: opacity 450ms, transform 580ms cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .purchase-popup-exit-active {
-  transition: opacity 550ms, transform 580ms cubic-bezier(0.19, 1, 0.22, 1);
+  transition: opacity 450ms, transform 580ms cubic-bezier(0.19, 1, 0.22, 1);
 }

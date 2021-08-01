@@ -101,7 +101,10 @@ const VerifyCarts = ({ items, prev, next }: PopupContentsProps) => {
           <DetailedCartList items={items}></DetailedCartList>
           <div className='next-button'>
             <Button big onClick={next}>
-              결제하기
+              <ValueCounter
+                value={comma(cartTotal(items))}
+                after='원 결제하기'
+              ></ValueCounter>
             </Button>
           </div>
         </div>

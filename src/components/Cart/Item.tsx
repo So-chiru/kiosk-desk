@@ -16,11 +16,13 @@ export const CartMenuItem = ({ item, onClick, updateCount }: CartItemProps) => {
       <div className='cart-item-contents'>
         <div className='cart-item-brief'>
           {item.item.image && (
-            <LazyImage
-              className='cart-item-image'
-              width={230}
-              src={item.item.image}
-            ></LazyImage>
+            <div className='cart-item-image-wrapper'>
+              <LazyImage
+                className='cart-item-image'
+                width={230}
+                src={item.item.image}
+              ></LazyImage>
+            </div>
           )}
           <div className='cart-item-metadata'>
             <div className='shorten'>

@@ -1,17 +1,84 @@
 .cart-menus {
-  margin: 80px 0px;
-  margin-bottom: 256px;
+  margin: 80px 0px 0px 0px;
   display: grid;
+  overflow: auto;
+  scrollbar-width: none;
 
   grid-template-columns: 1fr;
   grid-template-rows: auto;
   width: 100%;
 
-  gap: 32px;
+  & > div {
+    transition: 0.23s all cubic-bezier(0.19, 1, 0.22, 1);
+    padding-bottom: 128px;
+
+    & .cart-item {
+      margin-bottom: 32px;
+    }
+
+    &::after {
+      content: ' ';
+      position: fixed;
+      width: 100%;
+      height: 256px;
+      bottom: 20%;
+      pointer-events: none;
+
+      background: linear-gradient(
+        to bottom,
+        hsla(0, 0%, 100%, 0) 0%,
+        hsla(0, 0%, 100%, 0.022) 12.9%,
+        hsla(0, 0%, 100%, 0.061) 23.1%,
+        hsla(0, 0%, 100%, 0.115) 31%,
+        hsla(0, 0%, 100%, 0.181) 37.1%,
+        hsla(0, 0%, 100%, 0.257) 41.7%,
+        hsla(0, 0%, 100%, 0.34) 45.3%,
+        hsla(0, 0%, 100%, 0.429) 48.2%,
+        hsla(0, 0%, 100%, 0.519) 51%,
+        hsla(0, 0%, 100%, 0.609) 54%,
+        hsla(0, 0%, 100%, 0.696) 57.6%,
+        hsla(0, 0%, 100%, 0.778) 62.3%,
+        hsla(0, 0%, 100%, 0.852) 68.5%,
+        hsla(0, 0%, 100%, 0.915) 76.5%,
+        hsla(0, 0%, 100%, 0.965) 86.9%,
+        hsl(0, 0%, 100%) 100%
+      );
+    }
+  }
 
   .no-menu {
     font-size: 42px;
     letter-spacing: -4px;
     color: #808080;
   }
+}
+
+.kiosk-cart-item-enter {
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.kiosk-cart-item-enter-active {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+.kiosk-cart-item-exit {
+  opacity: 1;
+}
+
+.kiosk-cart-item-exit-active {
+  opacity: 0;
+  height: 0 !important;
+  margin-bottom: 0px !important;
+}
+
+.kiosk-cart-item-enter-active {
+  transition: opacity 450ms, transform 580ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.kiosk-cart-item-exit-active {
+  transition: opacity 180ms, height 280ms cubic-bezier(0.19, 1, 0.22, 1),
+    margin-bottom 280ms cubic-bezier(0.19, 1, 0.22, 1),
+    transform 280ms cubic-bezier(0.19, 1, 0.22, 1);
 }

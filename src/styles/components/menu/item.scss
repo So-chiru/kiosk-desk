@@ -23,9 +23,9 @@
   .menu-item-contents {
     display: flex;
     flex-direction: column;
-    margin: auto;
-    margin-top: 22px;
-    margin-bottom: 22px;
+    margin: 22px auto;
+    padding-left: 22px;
+    padding-right: 22px;
   }
 
   .menu-item-image {

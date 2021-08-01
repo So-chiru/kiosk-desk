@@ -1,0 +1,31 @@
+
+
+.value-count {
+  display: inline-block;
+}
+
+.value-count-enter {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.value-count-enter-active,
+.value-count-enter-done {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+.value-count-exit {
+  display: none;
+  opacity: 0;
+  transform: translateY(0px);
+}
+
+.value-count-enter-active,
+.value-count-exit-active {
+  transition: opacity 250ms, transform 280ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.value-count-exit-active {
+  transition: opacity 2450ms, transform 280ms cubic-bezier(0.19, 1, 0.22, 1);
+}

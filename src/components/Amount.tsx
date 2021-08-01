@@ -5,6 +5,7 @@ interface AmountSelectionProps {
 }
 
 import '@/styles/components/amount.scss'
+import ValueCounter from './ValueCounter'
 
 const MinusSVG = (
   <svg
@@ -59,7 +60,9 @@ export const AmountSelection = ({
         {remove ? DeleteSVG : MinusSVG}
       </div>
       <div className='number'>
-        <h1 className='amount-number'>{value}</h1>
+        <h1 className='amount-number'>
+          <ValueCounter value={value}></ValueCounter>
+        </h1>
       </div>
       <div className='plus' onClick={() => update && update(value + 1)}>
         {PlusSVG}

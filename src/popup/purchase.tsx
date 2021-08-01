@@ -5,7 +5,7 @@ import Popup, { PopupState } from '@/components/Popup'
 import { RootState } from '@/store'
 
 import '@/styles/popup/purchase.scss'
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useLayoutEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { cartTotal, comma } from '@/utils/number'
 
@@ -18,8 +18,10 @@ import {
   StorePaymentMethod,
   StorePaymentRequestState
 } from '@/@types/order'
-import { CSSTransition } from 'react-transition-group'
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { BankIcon, CardIcon, DirectIcon, TossIcon } from '@/components/Icons'
+import { cancelOrder, makeAnOrder } from '@/api/order'
+import ValueCounter from '@/components/ValueCounter'
 
 const READY_TIME = 30000
 interface ViewCartsProps {
@@ -45,8 +47,27 @@ const ViewCarts = ({ items, onClick }: ViewCartsProps) => {
     <div className='mini-cart-wrapper'>
       <div className='mini-cart'>
         <div className='item-lists'>
-          <p>{items.map(v => `${v.item.name} x ${v.amount}`).join(', ')}</p>
-          <p className='total-price'>{comma(cartTotal(items))}원</p>
+          <TransitionGroup className='item-list-wrapper'>
+            {items.map(v => (
+              <CSSTransition
+                appear
+                timeout={300}
+                key={v.item.id}
+                classNames='item-listin'
+              >
+                <span className='item'>
+                  {`${v.item.name} `}
+                  <ValueCounter value={v.amount} before={'x '}></ValueCounter>
+                </span>
+              </CSSTransition>
+            ))}
+          </TransitionGroup>
+          <p className='total-price'>
+            <ValueCounter
+              value={comma(cartTotal(items))}
+              after='원'
+            ></ValueCounter>
+          </p>
         </div>
         <Button onClick={onClick}>선택 완료</Button>
       </div>
@@ -144,62 +165,26 @@ const SelectPayments = ({
 
   const [fetching, setFetching] = useState<boolean>(false)
 
-  const cancelPayment = async (orderId: string, cancelReason?: string) => {
+  const cancelPayment = async (orderId: string, cancelReason: string) => {
     setFetching(true)
 
-    fetch(process.env.API_ENDPOINT! + `/order/${orderId}/cancel`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
-      body: JSON.stringify({
-        reason: cancelReason
-      })
-    })
-      .then(v => v.json())
-      .then(v => {
-        if (v.status === 'success') {
-          prev()
-        }
+    // TODO : 적절한 에러 핸들링
 
-        // TODO : 적절한 에러 핸들링
-      })
+    cancelOrder(orderId, cancelReason)
+      .then(() => prev)
       .finally(() => setFetching(false))
   }
 
   const goPayment = async (payWith: StorePaymentMethod) => {
     if (!toss) {
-      // toss 서비스가 안되는 경우 에러 표시하기
+      // TODO : toss 서비스가 안되는 경우 에러 표시하기
       return false
     }
 
     setFetching(true)
-
-    fetch(process.env.API_ENDPOINT! + '/order', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
-      body: JSON.stringify({
-        items: items.map(v => [v.amount, v.item.id]),
-        payWith: payWith
-      })
-    })
-      .then(v => v.json())
+    makeAnOrder(items, payWith)
       .then(v => {
-        if (v.status !== 'success') {
-          return
-        }
-
-        if (!v.data.order) {
-          return
-        }
-
-        // TODO : 적절한 에러 핸들링
-
-        if (v.data && v.data.toss) {
+        if (v.data.toss) {
           const orderData = {
             amount: v.data.toss.amount,
             orderId: v.data.toss.orderId,
@@ -240,6 +225,9 @@ const SelectPayments = ({
       })
       .finally(() => {
         setFetching(false)
+      })
+      .catch(e => {
+        // TODO : 적절한 에러 핸들링
       })
   }
 
@@ -283,9 +271,22 @@ interface OrderDoneProps {
   error?: Error
   waiting?: WaitingReason
   leftTime: number
+  cancelable: boolean
 }
 
-const OrderDone = ({ state, error, waiting, leftTime }: OrderDoneProps) => {
+const OrderDone = ({
+  state,
+  error,
+  waiting,
+  leftTime,
+  cancelable
+}: OrderDoneProps) => {
+  const OrderCancelButton = (
+    <div className='button-group'>
+      <Button theme='danger'>주문 취소하기</Button>
+    </div>
+  )
+
   if (error) {
     return (
       <div className='result-view-contents'>
@@ -312,6 +313,7 @@ const OrderDone = ({ state, error, waiting, leftTime }: OrderDoneProps) => {
             {comma(Math.floor(waiting.left / 1000 / 60))}분 후에 결제가
             만료됩니다.
           </h3>
+          {cancelable && OrderCancelButton}
         </div>
       )
     }
@@ -323,6 +325,7 @@ const OrderDone = ({ state, error, waiting, leftTime }: OrderDoneProps) => {
           title={'결제 승인 대기 중입니다...'}
           description={'잠시 기다려주세요.'}
         ></StatusIndicator>
+        {cancelable && OrderCancelButton}
       </div>
     )
   }
@@ -414,6 +417,7 @@ interface WaitingReason {
 const useOrderPlace = (): [
   string,
   StorePaymentRequestState,
+  boolean,
   Error?,
   WaitingReason?
 ] => {
@@ -426,10 +430,13 @@ const useOrderPlace = (): [
   )
 
   const [waiting, setWaiting] = useState<WaitingReason | undefined>()
+  const [cancelable, setCancelable] = useState<boolean>(false)
 
   const [error, setError] = useState<Error>()
 
   const stateUpdate = (data: StateUpdateData) => {
+    setCancelable(false)
+
     if (data.state === StoreOrderState.WaitingPayment) {
       setState(StorePaymentRequestState.Waiting)
 
@@ -446,6 +453,8 @@ const useOrderPlace = (): [
             data.virtualAccount.customerName
           }' 이름으로 보내주세요.`
         })
+
+        setCancelable(true)
       }
 
       return
@@ -459,8 +468,12 @@ const useOrderPlace = (): [
         description: '가게에서 확인할 때까지 잠시 기다려주세요.'
       })
 
+      setCancelable(true)
+
       return
     }
+
+    setCancelable(false)
 
     if (
       data.state === StoreOrderState.Aborted ||
@@ -477,7 +490,7 @@ const useOrderPlace = (): [
     setState(StorePaymentRequestState.Success)
   }
 
-  const [setOrderId, _socket] = useDataSocket(stateUpdate)
+  const [setOrderId] = useDataSocket(stateUpdate)
 
   useEffect(() => {
     if (!orderState) {
@@ -539,7 +552,7 @@ const useOrderPlace = (): [
     }
   }, [orderState])
 
-  return [orderState, state, error, waiting]
+  return [orderState, state, cancelable, error, waiting]
 }
 
 const useStep = (): [
@@ -548,7 +561,9 @@ const useStep = (): [
   () => void,
   () => void
 ] => {
-  const [step, setStep] = useState<PurchasePopupStep>(PurchasePopupStep.Selecting)
+  const [step, setStep] = useState<PurchasePopupStep>(
+    PurchasePopupStep.Selecting
+  )
 
   const next = () => {
     if (step === PurchasePopupStep.Verify) {
@@ -628,6 +643,7 @@ export const PurchasePopup = () => {
   const [
     orderResponseDefined,
     orderState,
+    orderCancelable,
     orderError,
     orderWaiting
   ] = useOrderPlace()
@@ -635,14 +651,16 @@ export const PurchasePopup = () => {
 
   const [lastStep, setLastStep] = useState<PurchasePopupStep>(step)
 
+  // 카트가 비어있으면 팝업을 숨김
   useEffect(() => {
     if (!carts.length && step === PurchasePopupStep.Verify) {
       setStep(PurchasePopupStep.Selecting)
     }
   }, [carts, step])
 
-  useEffect(() => setLastStep(step), [step])
+  useLayoutEffect(() => setLastStep(step), [step])
 
+  // 주문 상태 값이 URL에 있는데 결제 팝업 상태가 Done이 아니면 Done으로 지정
   useEffect(() => {
     if (!orderResponseDefined) {
       return
@@ -685,6 +703,7 @@ export const PurchasePopup = () => {
         state={orderState}
         waiting={orderWaiting}
         error={orderError}
+        cancelable={orderCancelable}
       ></OrderDone>
     )
   }

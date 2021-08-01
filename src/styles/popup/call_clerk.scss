@@ -1,6 +1,6 @@
 .auto-close-text {
   margin: auto;
-  margin-top: 128px;
+  margin-top: 64px;
 
   letter-spacing: -2px;
   color: #787b81;
@@ -10,4 +10,10 @@
 .clerk-contents {
   margin: auto;
   text-align: center;
+}
+
+.result-view-contents {
+  .button-group {
+    margin-top: 16px;
+  }
 }

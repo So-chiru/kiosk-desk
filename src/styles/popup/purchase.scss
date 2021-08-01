@@ -22,6 +22,29 @@
     .total-price {
       margin-left: auto;
     }
+
+    .item-list-wrapper {
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
+    .item {
+      margin-right: 8px;
+      display: inline-block;
+
+      &::after {
+        content: ',';
+        position: relative;
+      }
+
+      &:last-child {
+        margin-right: unset;
+
+        &::after {
+          content: '';
+        }
+      }
+    }
   }
 
   .button {
@@ -154,7 +177,7 @@
 
 .auto-close-text {
   margin: auto;
-  margin-top: 128px;
+  margin-top: 64px;
 
   letter-spacing: -2px;
   color: #787b81;
@@ -194,5 +217,31 @@
 }
 
 .purchase-popup-exit-active {
+  transition: opacity 450ms, transform 580ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.item-listin-enter {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.item-listin-enter-active,
+.item-listin-exit-active,
+.item-listin-enter-done {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+.item-listin-exit {
+  opacity: 0;
+  transform: translateY(0px);
+}
+
+.item-listin-enter-active,
+.item-listin-exit-active {
+  transition: opacity 450ms, transform 580ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.item-listin-exit-active {
   transition: opacity 450ms, transform 580ms cubic-bezier(0.19, 1, 0.22, 1);
 }

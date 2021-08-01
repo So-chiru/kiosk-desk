@@ -8,6 +8,7 @@ import '@/styles/components/cart/item.scss'
 import { comma } from '@/utils/number'
 import AmountSelection from '../Amount'
 import LazyImage from '../LazyImage'
+import ValueCounter from '../ValueCounter'
 
 export const CartMenuItem = ({ item, onClick, updateCount }: CartItemProps) => {
   return (
@@ -25,7 +26,10 @@ export const CartMenuItem = ({ item, onClick, updateCount }: CartItemProps) => {
             <div className='shorten'>
               <h3 className='menu-name'>{item.item.name}</h3>
               <span className='menu-price'>
-                {comma((item.item.price || 0) * item.amount)}원
+                <ValueCounter
+                  value={comma((item.item.price || 0) * item.amount)}
+                  after='원'
+                ></ValueCounter>
               </span>
             </div>
             <p className='menu-description'>{item.item.description}</p>

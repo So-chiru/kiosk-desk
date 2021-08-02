@@ -4,7 +4,7 @@ interface CartListProps {
 
 import { updateCartItemCount } from '@/store/cart/actions'
 import '@/styles/components/cart/list.scss'
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 
@@ -19,7 +19,7 @@ export const DetailedCartList = ({ items }: CartListProps) => {
 
   const [lastItems, setLastItems] = useState<CartItem[]>(items)
 
-  useEffect(() => setLastItems(items), [items])
+  useLayoutEffect(() => setLastItems(items), [items])
 
   return (
     <div className='cart-menus'>
@@ -39,10 +39,12 @@ export const DetailedCartList = ({ items }: CartListProps) => {
             timeout={{ enter: 600, exit: 300 }}
             classNames='kiosk-cart-item'
           >
-            <CartMenuItem
-              item={item}
-              updateCount={updateItemCount}
-            ></CartMenuItem>
+            {
+              <CartMenuItem
+                item={item}
+                updateCount={updateItemCount}
+              ></CartMenuItem>
+            }
           </CSSTransition>
         ))}
       </TransitionGroup>

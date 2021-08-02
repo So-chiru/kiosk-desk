@@ -22,11 +22,17 @@ export enum StorePaymentMethod {
   Direct = 1000
 }
 
+export interface StoreCancel {
+  reason: string
+  date: string
+}
+
 export interface StoreOrder extends VerifiedStoreOrderRequest {
   id: string
   date: string
   payWith: StorePaymentMethod
   state: StoreOrderState
+  cancel?: StoreCancel
 }
 
 export enum StorePaymentRequestState {

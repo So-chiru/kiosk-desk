@@ -305,6 +305,8 @@ const OrderDone = ({
 
   if (state === StorePaymentRequestState.Waiting) {
     if (waiting) {
+      const leftTime = useAutoClose(waiting.left)
+
       return (
         <div className='result-view-contents'>
           <StatusIndicator
@@ -313,8 +315,7 @@ const OrderDone = ({
             description={waiting.description || '잠시 기다려주세요.'}
           ></StatusIndicator>
           <h3 className='auto-close-text'>
-            {comma(Math.floor(waiting.left / 1000 / 60))}분 후에 결제가
-            만료됩니다.
+            {comma(Math.floor(leftTime / 1000 / 60))}분 후에 결제가 만료됩니다.
           </h3>
           {cancelable && OrderCancelButton}
         </div>
@@ -588,39 +589,34 @@ const useStep = (): [
 }
 
 const useAutoClose = (
-  step: PurchasePopupStep,
-  setStep: ReturnType<typeof useStep>[1],
-  orderState: StorePaymentRequestState,
-  backToMain: () => void
+  time: number,
+  disableCondition?: () => boolean,
+  onClose?: () => void
 ) => {
-  const [leftTime, setLeftTime] = useState<number>(READY_TIME)
+  const [leftTime, setLeftTime] = useState<number>(time)
   const [closeAt, setCloseAt] = useState<number>(0)
 
   useEffect(() => {
-    if (
-      step !== PurchasePopupStep.Done ||
-      orderState === StorePaymentRequestState.Waiting
-    ) {
+    if (disableCondition && disableCondition()) {
       return
     }
 
     if (!closeAt) {
-      setCloseAt(Date.now() + READY_TIME)
+      setCloseAt(Date.now() + time)
     }
 
     const update = setTimeout(() => {
       setLeftTime(closeAt - Date.now())
     }, 100)
 
-    if (leftTime < 0) {
-      backToMain()
-      setStep(PurchasePopupStep.Selecting)
+    if (leftTime < 0 && onClose) {
+      onClose()
     }
 
     return () => {
       clearTimeout(update)
     }
-  }, [step, orderState, closeAt, leftTime])
+  }, [disableCondition, closeAt, leftTime])
 
   return leftTime
 }
@@ -650,7 +646,17 @@ export const PurchasePopup = () => {
     orderError,
     orderWaiting
   ] = useOrderPlace()
-  const leftTime = useAutoClose(step, setStep, orderState, backToMain)
+
+  const leftTime = useAutoClose(
+    READY_TIME,
+    () =>
+      step !== PurchasePopupStep.Done ||
+      orderState === StorePaymentRequestState.Waiting,
+    () => {
+      backToMain()
+      setStep(PurchasePopupStep.Selecting)
+    }
+  )
 
   const [lastStep, setLastStep] = useState<PurchasePopupStep>(step)
 

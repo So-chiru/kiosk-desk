@@ -32,6 +32,7 @@ interface ViewCartsProps {
 interface StateUpdateData {
   state: StoreOrderState
   price?: number
+  left?: number
   virtualAccount?: {
     accountNumber: string
     bank: string
@@ -468,7 +469,7 @@ const useOrderPlace = (): [
       setWaiting({
         icon: 'loading',
         title: '주문 확인을 기다리고 있습니다...',
-        left: 1800000,
+        left: data.left || 1800000,
         description: '가게에서 확인할 때까지 잠시 기다려주세요.'
       })
 

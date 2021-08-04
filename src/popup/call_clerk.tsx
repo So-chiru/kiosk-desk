@@ -14,6 +14,7 @@ enum CallState {
   Failed
 }
 
+import '@/styles/popup/basic-popup.scss'
 import '@/styles/popup/call_clerk.scss'
 import { comma } from '@/utils/number'
 

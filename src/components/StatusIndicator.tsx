@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-type IconKeys = 'check' | 'error' | 'loading' | 'bank'
+type IconKeys = 'check' | 'error' | 'loading' | 'bank' | 'key'
 
 interface StatusIndicatorProps {
   icon: ReactNode | IconKeys
@@ -56,6 +56,17 @@ const IconLists: {
     >
       <path fill='none' d='M0 0h24v24H0z' />
       <path d='M2 20h20v2H2v-2zm2-8h2v7H4v-7zm5 0h2v7H9v-7zm4 0h2v7h-2v-7zm5 0h2v7h-2v-7zM2 7l10-5 10 5v4H2V7zm2 1.236V9h16v-.764l-8-4-8 4zM12 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2z' />
+    </svg>
+  ),
+  key: (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 24 24'
+      width='48'
+      height='48'
+    >
+      <path fill='none' d='M0 0h24v24H0z' />
+      <path d='M10.758 11.828l7.849-7.849 1.414 1.414-1.414 1.415 2.474 2.474-1.414 1.415-2.475-2.475-1.414 1.414 2.121 2.121-1.414 1.415-2.121-2.122-2.192 2.192a5.002 5.002 0 0 1-7.708 6.294 5 5 0 0 1 6.294-7.708zm-.637 6.293A3 3 0 1 0 5.88 13.88a3 3 0 0 0 4.242 4.242z' />
     </svg>
   )
 }

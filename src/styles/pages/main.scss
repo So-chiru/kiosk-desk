@@ -1,4 +1,50 @@
 .page.main {
+  position: relative;
+
+  & > .kiosk-spacer {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: 100%;
+  }
+
+  .page-header {
+    margin-top: 32px;
+    margin-bottom: 32px;
+    width: 100%;
+    display: flex;
+
+    .icons {
+      display: flex;
+      gap: 32px;
+      margin-left: auto;
+
+      .icon {
+        width: 64px;
+        height: 64px;
+        display: flex;
+        cursor: pointer;
+
+        transition: 0.23s transform cubic-bezier(0.19, 1, 0.22, 1);
+
+        &:hover,
+        &:focus {
+          transform: scale(1.1);
+        }
+
+        &:active {
+          transform: scale(1.2);
+        }
+
+        & svg {
+          margin: auto;
+          width: 32px;
+          height: 32px;
+        }
+      }
+    }
+  }
+
   .page-contents {
     margin: auto;
   }

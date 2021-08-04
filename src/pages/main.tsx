@@ -1,6 +1,8 @@
 import Button from '@/components/Button'
+import { SettingsIcon } from '@/components/Icons'
 import BigLogo from '@/components/Logo/Big'
 import Spacer from '@/components/Spacer'
+import AuthenticationPopup from '@/popup/authentication'
 import CallClerkPopup from '@/popup/call_clerk'
 
 import '@/styles/pages/main.scss'
@@ -29,11 +31,19 @@ const NavigateButtons = ({ onClerkCall }: NavigateButtonsProps) => {
 }
 
 export const MainPage = () => {
-  const [callClerk, setCallClerk] = useState<boolean>(false)
+  const [callClerkPopup, showCallClerkPopup] = useState<boolean>(false)
+  const [requestAuthPopup, showRequestAuthPopup] = useState<boolean>(false)
 
   return (
     <div className='page main'>
       <Spacer template='main-contents' flex={true}>
+        <div className='page-header'>
+          <div className='icons'>
+            <div className='icon' onClick={() => showRequestAuthPopup(true)}>
+              {SettingsIcon}
+            </div>
+          </div>
+        </div>
         <div className='page-contents'>
           <Spacer
             customStyles={{
@@ -43,12 +53,16 @@ export const MainPage = () => {
             <BigLogo></BigLogo>
           </Spacer>
           <NavigateButtons
-            onClerkCall={() => setCallClerk(true)}
+            onClerkCall={() => showCallClerkPopup(true)}
           ></NavigateButtons>
           <CallClerkPopup
-            show={callClerk}
-            close={() => setCallClerk(false)}
+            show={callClerkPopup}
+            close={() => showCallClerkPopup(false)}
           ></CallClerkPopup>
+          <AuthenticationPopup
+            show={requestAuthPopup}
+            close={() => showRequestAuthPopup(false)}
+          ></AuthenticationPopup>
         </div>
       </Spacer>
     </div>

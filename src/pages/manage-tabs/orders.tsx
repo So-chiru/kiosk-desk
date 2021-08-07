@@ -15,7 +15,7 @@ const useOrderData = (
 
   useEffect(() => {
     const messageEventId = socketEvents.on('commands', type => {
-      // TODO : 가능한 경우 데이터의 필드를 활용할 수 있도록 특정 ID를 가진 요소만 업데이트할 수 있돌고 구현하기
+      // TODO : 가능한 경우 데이터의 필드를 활용할 수 있도록 특정 ID를 가진 요소만 업데이트할 수 있도록 구현하기
 
       if (type === 'ORDER_UPDATE') {
         requestUpdate(Math.random())

@@ -67,10 +67,4 @@ const useDataSocket = () => {
   return socket
 }
 
-export const DataSocket = () => {
-  const socket = useDataSocket()
-
-  return <></>
-}
-
-export default DataSocket
+export default useDataSocket

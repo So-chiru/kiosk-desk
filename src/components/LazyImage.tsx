@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useLayoutEffect, useRef, useState } from 'react'
 
 interface LazyImageProps {
   src: string
@@ -27,7 +27,7 @@ export const LazyImage = ({
 
   const ref = useRef<HTMLImageElement>(null)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!ref.current) {
       return
     }

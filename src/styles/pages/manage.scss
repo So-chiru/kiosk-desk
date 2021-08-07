@@ -1,0 +1,121 @@
+.page.manage {
+  position: relative;
+
+  & > .kiosk-spacer {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: 100%;
+  }
+
+  .page-header {
+    margin-top: 32px;
+    margin-bottom: 32px;
+    width: 100%;
+
+    .icons {
+      display: flex;
+      gap: 32px;
+      margin-left: auto;
+
+      .icon {
+        width: 64px;
+        height: 64px;
+        display: flex;
+        cursor: pointer;
+
+        transition: 0.23s transform cubic-bezier(0.19, 1, 0.22, 1);
+
+        &:hover,
+        &:focus {
+          transform: scale(1.1);
+        }
+
+        &:active {
+          transform: scale(1.2);
+        }
+
+        & svg {
+          margin: auto;
+          width: 32px;
+          height: 32px;
+        }
+      }
+    }
+  }
+
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .button {
+      width: 60%;
+      margin: auto;
+
+      font-size: 24px;
+      letter-spacing: -2px;
+    }
+  }
+
+  .tab-buttons {
+    display: flex;
+    gap: 16px;
+  }
+}
+
+.manage-tab {
+  margin-bottom: 10vh;
+}
+
+.manage-header-enter {
+  opacity: 0;
+  transform: translateX(50px);
+}
+
+.manage-header-enter-active,
+.manage-header-exit-active,
+.manage-header-enter-done {
+  opacity: 1;
+  transform: translateX(0px);
+}
+
+.manage-header-exit {
+  opacity: 0;
+  transform: translateX(0px);
+}
+
+.manage-header-enter-active,
+.manage-header-exit-active {
+  transition: opacity 350ms, transform 380ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.manage-header-exit-active {
+  transition: opacity 350ms, transform 380ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.manage-contents-enter {
+  opacity: 0;
+  transform: translateX(50px);
+}
+
+.manage-contents-enter-active,
+.manage-contents-exit-active,
+.manage-contents-enter-done {
+  opacity: 1;
+  transform: translateX(0px);
+}
+
+.manage-contents-exit {
+  opacity: 0;
+  transform: translateX(0px);
+}
+
+.manage-contents-enter-active,
+.manage-contents-exit-active {
+  transition: opacity 350ms, transform 380ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.manage-contents-exit-active {
+  transition: opacity 350ms, transform 380ms cubic-bezier(0.19, 1, 0.22, 1);
+}

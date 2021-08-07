@@ -17,6 +17,7 @@ enum AuthRequestState {
 
 import '@/styles/popup/basic-popup.scss'
 import { comma } from '@/utils/number'
+import { useHistory } from 'react-router-dom'
 
 const READY_TIME = 5000
 
@@ -28,6 +29,8 @@ export const AuthenticationPopup = ({
     AuthRequestState.StandBy
   )
 
+  const history = useHistory()
+
   useEffect(() => {
     if (!show) {
       return
@@ -35,25 +38,39 @@ export const AuthenticationPopup = ({
 
     setAuthRequestState(AuthRequestState.Authing)
 
-    fetch(process.env.API_ENDPOINT + '/auth')
-      .then(v => {
+    const abortControl = new AbortController()
+
+    fetch(process.env.API_ENDPOINT + '/auth', {
+      signal: abortControl.signal
+    })
+      .then(async v => {
         if (v.status !== 200) {
           setAuthRequestState(AuthRequestState.Failed)
         } else {
-          // setAuthRequestState(AuthRequestState.Authed)
+          try {
+            const data = await v.json()
 
-          // TODO : 응답에 따라 변경
+            if (data.status !== 'success') throw new Error('Auth failed.')
+            if (typeof data.data !== 'object')
+              throw new Error('Data field is not typeof an object.')
 
-          setAuthRequestState(AuthRequestState.WaitingKey)
+            if (data.data.state === 'DONE') {
+              setAuthRequestState(AuthRequestState.Authed)
+            } else if (data.data.state === 'WAITING_KEY') {
+              setAuthRequestState(AuthRequestState.WaitingKey)
+            } else throw new Error('Unknown auth state.')
+          } catch (e) {
+            setAuthRequestState(AuthRequestState.Failed)
+          }
         }
-
-        // TODO : 관리자 페이지로 이동
-
-        return v
       })
       .catch(() => {
         setAuthRequestState(AuthRequestState.Failed)
       })
+
+    return () => {
+      abortControl.abort()
+    }
   }, [show, close])
 
   useEffect(() => {
@@ -78,6 +95,12 @@ export const AuthenticationPopup = ({
       }
     }
   }, [authRequestState, show])
+
+  useEffect(() => {
+    if (authRequestState === AuthRequestState.Authed) {
+      history.push('/manage')
+    }
+  }, [authRequestState])
 
   const minify = () => {
     if (

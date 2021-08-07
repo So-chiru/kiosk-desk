@@ -6,11 +6,13 @@ import '@/styles/components/valueCounter.scss'
 export const ValueCounter = ({
   value,
   before,
-  after
+  after,
+  noTransform
 }: {
   value: number | string
   before?: ReactNode
   after?: ReactNode
+  noTransform?: boolean
 }) => {
   const [lastValue, setLastValue] = useState<number | string>()
 
@@ -24,7 +26,7 @@ export const ValueCounter = ({
     <CSSTransition
       in={value === lastValue}
       timeout={TIME}
-      classNames='value-count'
+      classNames={noTransform ? 'value-count-no-transform' : 'value-count'}
     >
       <span className='value-count'>
         {before}

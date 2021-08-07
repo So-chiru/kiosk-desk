@@ -22,6 +22,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { BankIcon, CardIcon, DirectIcon, TossIcon } from '@/components/Icons'
 import { cancelOrder, makeAnOrder } from '@/api/order'
 import ValueCounter from '@/components/ValueCounter'
+import { socketEvents } from '@/components/Data/socket'
 
 const READY_TIME = 30000
 interface ViewCartsProps {
@@ -364,7 +365,7 @@ const OrderDone = ({
   )
 }
 
-const useDataSocket = (
+const useSocketEvents = (
   stateUpdate: (data: StateUpdateData) => void
 ): [React.Dispatch<React.SetStateAction<string | undefined>>, WebSocket?] => {
   const socket = useSelector((state: RootState) => state.main.socket)
@@ -381,24 +382,21 @@ const useDataSocket = (
       IdSet = true
     }
 
-    socket.onopen = ev => {
+    const openEventId = socketEvents.on('open', socket => {
       if (orderId && !IdSet) {
         socket.send(JSON.stringify({ setOrderId: orderId }))
       }
-    }
+    })
 
-    socket.onmessage = ev => {
-      console.log(ev.data)
-
-      if (typeof ev.data === 'string' && ev.data.indexOf('{') === 0) {
-        const message = JSON.parse(ev.data)
-
-        // TODO : 다른 명령어 처리 함수를 만들어서 해당 함수에서 명령 수행
-
-        if (message.code === 'STATE_UPDATE') {
-          stateUpdate(message.data)
-        }
+    const messageEventId = socketEvents.on('commands', (type, data) => {
+      if (type === 'STATE_UPDATE') {
+        stateUpdate(data as StateUpdateData)
       }
+    })
+
+    return () => {
+      socketEvents.off('open', openEventId)
+      socketEvents.off('commands', messageEventId)
     }
   }, [socket, orderId])
 
@@ -495,7 +493,7 @@ const useOrderPlace = (): [
     setState(StorePaymentRequestState.Success)
   }
 
-  const [setOrderId] = useDataSocket(stateUpdate)
+  const [setOrderId] = useSocketEvents(stateUpdate)
 
   useEffect(() => {
     if (!orderState) {

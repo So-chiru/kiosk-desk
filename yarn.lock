@@ -357,10 +357,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^16.4.2":
-  version: 16.4.2
-  resolution: "@types/node@npm:16.4.2"
-  checksum: cc67dcab59476bc784d6e72d36de7b380bff38d897f77308a89030bad1703bbd10050d5c4d2233ea080b940ed96990e1f167a9efccc570bdff4add1e75cc047a
+"@types/node@npm:^16.4.13":
+  version: 16.4.13
+  resolution: "@types/node@npm:16.4.13"
+  checksum: 3e5f80c62a2fc459a4a87f22c62ae2f5c18ff7019d155b4711c3b079184fd1fb694f64cd85dddf473da13b9eba449e44394f5c2be4c4cbd62b5cb2184f6b81e0
   languageName: node
   linkType: hard
 
@@ -469,6 +469,13 @@ __metadata:
   version: 1.0.0
   resolution: "@types/treeify@npm:1.0.0"
   checksum: f7b82d91a4be51d5b93fb1e245ea71768e06a567daa1ff84fe075c3e62ce90f2703fa8258f0f093f92816416fe2f41c3177e5005114613adbdddabe2ddc3e593
+  languageName: node
+  linkType: hard
+
+"@types/uuid@npm:^8.3.1":
+  version: 8.3.1
+  resolution: "@types/uuid@npm:8.3.1"
+  checksum: 5864be83031f5836be985187ecebb2769936bf223bad896dac381f1a0fdd2ae239f448263196f752d62a4ecc8563817d6d94e329eb2099a28e743ab206e7bfea
   languageName: node
   linkType: hard
 
@@ -6111,13 +6118,14 @@ fsevents@~2.3.2:
   resolution: "react-base-sochiru@workspace:."
   dependencies:
     "@tosspayments/sdk": ^1.2.0
-    "@types/node": ^16.4.2
+    "@types/node": ^16.4.13
     "@types/react": ^17.0.3
     "@types/react-dom": ^17.0.3
     "@types/react-redux": ^7.1.16
     "@types/react-router-dom": ^5.1.8
     "@types/react-transition-group": ^4.4.2
     "@types/redis": ^2.8.31
+    "@types/uuid": ^8.3.1
     "@typescript-eslint/eslint-plugin": ^4.22.0
     "@typescript-eslint/parser": ^4.22.0
     "@yarnpkg/pnpify": ^3.0.0-rc.3
@@ -6148,6 +6156,7 @@ fsevents@~2.3.2:
     speed-measure-webpack-plugin: ^1.5.0
     ts-loader: ^9.1.1
     typescript: ^4.3.5
+    uuid: ^8.3.2
     webpack: ^5.35.1
     webpack-cli: ^4.6.0
     webpack-dev-server: ^3.11.2
@@ -7910,6 +7919,15 @@ typescript@^4.3.5:
   bin:
     uuid: ./bin/uuid
   checksum: 1ce3f37e214d6d0dc94a6a9663a0365013ace66bc3fd5b203e6f5d2eeb978aaee1192367222386345d30b4c6a447928c501121aa84c637724bf105ef57284949
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^8.3.2":
+  version: 8.3.2
+  resolution: "uuid@npm:8.3.2"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: aed2bcef341f95635f308fea8831fb9038b18c485fe7e71feb89d2e05602dfecad0cb6f2246fae096d4da425cca6e8a71056f28abd97ad98cf770a2018853248
   languageName: node
   linkType: hard
 

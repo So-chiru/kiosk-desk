@@ -5,7 +5,7 @@
   "author": "So-chiru <unleash9224@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^16.4.2",
+    "@types/node": "^16.4.13",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
     "@types/react-redux": "^7.1.16",
@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "@tosspayments/sdk": "^1.2.0",
+    "@types/uuid": "^8.3.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.4",
@@ -54,6 +55,7 @@
     "redis": "^3.1.2",
     "redux": "^4.1.0",
     "redux-saga": "^1.1.3",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "uuid": "^8.3.2"
   }
 }

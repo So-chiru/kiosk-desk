@@ -1,0 +1,70 @@
+.order-brief {
+  position: relative;
+  border-radius: 16px;
+  box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.12);
+  padding: 26px 5%;
+  display: flex;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  p {
+    margin: 0;
+  }
+
+  .metadata {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    letter-spacing: -1px;
+
+    .order-meta {
+      display: flex;
+      gap: 16px;
+
+      h3 {
+        line-height: 1.5;
+        font-size: 24px;
+      }
+
+      & > span {
+        margin-top: auto;
+        margin-bottom: auto;
+        font-size: 18px;
+        color: #848484;
+      }
+
+      .order-state {
+        .done {
+          color: #2ea949;
+        }
+
+        .pending {
+          color: #ea7b14;
+        }
+      }
+    }
+
+    .order-items {
+      margin-top: auto;
+      margin-bottom: auto;
+      font-size: 22px;
+      font-weight: bold;
+    }
+  }
+
+  .controls {
+    display: flex;
+    gap: 16px;
+
+    .button {
+      margin: auto;
+
+      &:last-child {
+        margin-right: unset;
+      }
+    }
+  }
+}

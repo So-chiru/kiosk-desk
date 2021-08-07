@@ -3,7 +3,8 @@
     display: flex;
   }
 
-  &[data-template='main-contents'] {
+  &[data-template='main-contents'],
+  &[data-template='manage-contents'] {
     height: 100vh;
   }
 

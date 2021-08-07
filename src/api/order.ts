@@ -29,6 +29,19 @@ export const makeAnOrder = (items: CartItem[], payWith: StorePaymentMethod) =>
       return v
     })
 
+export const acceptOrder = (orderId: string) =>
+  fetch(process.env.API_ENDPOINT! + `/order/${orderId}/accept`, {
+    method: 'get'
+  })
+    .then(v => v.json())
+    .then(v => {
+      if (v.status === 'success') {
+        return v
+      }
+
+      throw new Error('Failed to accept the order.')
+    })
+
 export const cancelOrder = (orderId: string, cancelReason: string) =>
   fetch(process.env.API_ENDPOINT! + `/order/${orderId}/cancel`, {
     method: 'POST',

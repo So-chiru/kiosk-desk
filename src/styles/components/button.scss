@@ -1,11 +1,15 @@
 $button-color: rgb(11, 99, 230);
 $button-alt-color: rgb(90, 92, 95);
+$button-warning-color: #FF5C00;
+$button-manage-active-color: #1e509b;
+$button-manage-alt-color: rgba(120, 123, 129, 0.24);
 $button-danger-color: rgb(223, 34, 20);
 
 .button {
   background: $button-color;
   display: inline-block;
   color: white;
+  fill: white;
   border-radius: 16px;
   padding: 12px 24px;
   position: relative;
@@ -25,6 +29,29 @@ $button-danger-color: rgb(223, 34, 20);
     background: darken($button-color, 30);
   }
 
+  &.roundy {
+    border-radius: 32px;
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  &[data-theme='warning'] {
+    background: $button-warning-color;
+
+    &:hover {
+      background: darken($button-warning-color, 20);
+    }
+
+    &:active {
+      background: darken($button-warning-color, 30);
+    }
+  }
+
   &[data-theme='alt'] {
     background: $button-alt-color;
 
@@ -34,6 +61,34 @@ $button-danger-color: rgb(223, 34, 20);
 
     &:active {
       background: darken($button-alt-color, 30);
+    }
+  }
+
+  &[data-theme='manage-alt'] {
+    background: $button-manage-alt-color;
+    box-shadow: unset;
+    color: #000;
+    fill: black;
+
+    &:hover {
+      background: darken($button-manage-alt-color, 20);
+    }
+
+    &:active {
+      background: darken($button-manage-alt-color, 30);
+    }
+  }
+
+  &[data-theme='manage-active'] {
+    background: $button-manage-active-color;
+    box-shadow: unset;
+    color: white;
+    fill: white;
+
+    &,
+    &:hover,
+    &:active {
+      background: $button-manage-active-color;
     }
   }
 
